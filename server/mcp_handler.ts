@@ -1,9 +1,9 @@
 // server/mcp_handler.ts
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { storage } from './storage.js';
-import { GOOGLE_API_KEY } from "./config.js";
+import { GEMINI_API_KEY } from "./config.js";
 
-const genAI = new GoogleGenerativeAI(GOOGLE_API_KEY!);
+const genAI = new GoogleGenerativeAI(GEMINI_API_KEY!);
 
 export async function handleMCPConversation(
     userId: number,
