@@ -20,9 +20,8 @@ export async function handleMCPConversation(
 
     await storage.createChatMessage({
         sessionId: currentSessionId,
-        userId: userId,
-        role: 'user',
-        content: message
+        sender: 'user',
+        text: message
     });
 
     const history = await storage.getChatMessages(currentSessionId, userId);
@@ -30,8 +29,8 @@ export async function handleMCPConversation(
 
     const chat = model.startChat({
         history: history.map(msg => ({
-            role: msg.role as 'user' | 'model',
-            parts: [{ text: msg.content || '' }]
+            role: msg.sender as 'user' | 'model',
+            parts: [{ text: msg.text || '' }]
         })),
     });
 
@@ -41,15 +40,14 @@ export async function handleMCPConversation(
 
     const modelMessage = await storage.createChatMessage({
         sessionId: currentSessionId,
-        userId: userId,
-        role: 'model',
-        content: text
+        sender: 'agent',
+        text: text
     });
 
     return {
         response: text,
         sessionId: currentSessionId,
-        userMessage: { role: 'user', content: message },
+        userMessage: { sender: 'user', text: message },
         modelMessage: modelMessage,
     };
 }
