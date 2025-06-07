@@ -11,16 +11,15 @@ export async function handleMCPConversation(userId, message, sessionId, attachme
     }
     await storage.createChatMessage({
         sessionId: currentSessionId,
-        userId: userId,
-        role: 'user',
-        content: message
+        sender: 'user',
+        text: message
     });
     const history = await storage.getChatMessages(currentSessionId, userId);
     const model = genAI.getGenerativeModel({ model: "gemini-pro" });
     const chat = model.startChat({
         history: history.map(msg => ({
-            role: msg.role,
-            parts: [{ text: msg.content || '' }]
+            role: msg.sender,
+            parts: [{ text: msg.text || '' }]
         })),
     });
     const result = await chat.sendMessage(message);
@@ -28,14 +27,13 @@ export async function handleMCPConversation(userId, message, sessionId, attachme
     const text = response.text();
     const modelMessage = await storage.createChatMessage({
         sessionId: currentSessionId,
-        userId: userId,
-        role: 'model',
-        content: text
+        sender: 'agent',
+        text: text
     });
     return {
         response: text,
         sessionId: currentSessionId,
-        userMessage: { role: 'user', content: message },
+        userMessage: { sender: 'user', text: message },
         modelMessage: modelMessage,
     };
 }

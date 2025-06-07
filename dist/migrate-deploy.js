@@ -7,6 +7,9 @@ import 'dotenv/config';
 console.log('Iniciando script de migração no deploy...');
 const dbUrl = process.env.DATABASE_URL;
 if (!dbUrl) {
+    console.error('DATABASE_URL não definida nas variáveis de ambiente');
+    console.error('Por favor, defina DATABASE_URL no seu arquivo .env ou nas variáveis de ambiente');
+    console.error('Exemplo: DATABASE_URL="postgresql://username:password@localhost:5432/database_name"');
     throw new Error('DATABASE_URL não definida nas variáveis de ambiente');
 }
 const sql = neon(dbUrl);
